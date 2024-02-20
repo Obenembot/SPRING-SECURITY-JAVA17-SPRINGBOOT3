@@ -25,18 +25,10 @@ public class SecurityConfig {
     @Autowired
     private JwtAuthFilter authFilter;
 
+    private String[] allow = {"/v2/api-docs", "/swagger-ui/"};
+
     @Bean
-    //authentication
     public UserDetailsService userDetailsService() {
-//        UserDetails admin = User.withUsername("Basant")
-//                .password(encoder.encode("Pwd1"))
-//                .roles("ADMIN")
-//                .build();
-//        UserDetails user = User.withUsername("John")
-//                .password(encoder.encode("Pwd2"))
-//                .roles("USER","ADMIN","HR")
-//                .build();
-//        return new InMemoryUserDetailsManager(admin, user);
         return new UserInfoUserDetailsService();
     }
 
@@ -45,6 +37,7 @@ public class SecurityConfig {
         return http.csrf().disable()
                 .authorizeHttpRequests()
                 .requestMatchers("/products/new-user","/products/authenticate").permitAll()
+                .requestMatchers(allow).permitAll()
                 .and()
                 .authorizeHttpRequests().requestMatchers("/products/**")
                 .authenticated().and()
