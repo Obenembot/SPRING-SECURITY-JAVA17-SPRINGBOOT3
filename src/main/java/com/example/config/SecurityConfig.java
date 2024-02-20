@@ -27,13 +27,17 @@ public class SecurityConfig {
     private JwtAuthFilter authFilter;
 
     private static final String publicKey[] = {
-            "/v2/api-docs",
+            "/v3/api-docs/**",
+            "/swagger-ui/**",
+            "/v2/api-docs/**",
             "/swagger-resources/**", // enable search resources
             "/swagger-ui.html",
             "/swagger-ui.css",
             "/webjars/**",
             "/springfox.js",
-            "/ui/**"
+            "/ui/**",
+            "/products/new-user",
+            "/products/authenticate"
 
     };
 
@@ -46,8 +50,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/products/new-user","/products/authenticate").permitAll()
-                .requestMatchers(HttpMethod.GET, publicKey).permitAll()
+                .requestMatchers(publicKey).permitAll()
                 .and()
                 .authorizeHttpRequests().requestMatchers("/products/**")
                 .authenticated().and()
