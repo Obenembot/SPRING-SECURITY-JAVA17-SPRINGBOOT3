@@ -4,6 +4,7 @@ import com.example.filter.JwtAuthFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -25,7 +26,16 @@ public class SecurityConfig {
     @Autowired
     private JwtAuthFilter authFilter;
 
-    private String[] allow = {"/v2/api-docs", "/swagger-ui/"};
+    private static final String publicKey[] = {
+            "/v2/api-docs",
+            "/swagger-resources/**", // enable search resources
+            "/swagger-ui.html",
+            "/swagger-ui.css",
+            "/webjars/**",
+            "/springfox.js",
+            "/ui/**"
+
+    };
 
     @Bean
     public UserDetailsService userDetailsService() {
@@ -37,7 +47,7 @@ public class SecurityConfig {
         return http.csrf().disable()
                 .authorizeHttpRequests()
                 .requestMatchers("/products/new-user","/products/authenticate").permitAll()
-                .requestMatchers(allow).permitAll()
+                .requestMatchers(HttpMethod.GET, publicKey).permitAll()
                 .and()
                 .authorizeHttpRequests().requestMatchers("/products/**")
                 .authenticated().and()
